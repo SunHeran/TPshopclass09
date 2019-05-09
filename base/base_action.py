@@ -1,3 +1,5 @@
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
 import allure
@@ -82,3 +84,15 @@ class BaseAction:
         """
         with open("./image/" + file_name, "rb") as f:
             allure.attach(title, f.read(), allure.attach_type.PNG)
+
+    def find_toast(self, message):
+        tost_xpath = By.XPATH, "//*[contains(@text,'%s')]" % message
+        print(tost_xpath)
+        return self.find_element(tost_xpath, timeout=3, poll=0.1).text
+
+    def is_toast_exits(self, message):
+        try:
+            self.find_toast(message)
+            return True
+        except TimeoutException:
+            return False
